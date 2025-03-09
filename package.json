@@ -13,8 +13,13 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "highcharts": "^12.1.2",
+    "highcharts-vue": "^2.0.1",
     "pinia": "^3.0.1",
-    "vue": "^3.5.13"
+    "primeicons": "^7.0.0",
+    "primevue": "^4.3.1",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.0",
