@@ -1,1 +1,17 @@
 @import './base.css';
+
+@font-face {
+  font-family: "TTDirectorsRegular";
+  src: url("fonts/TTDirectorsDEMOBL-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+html {
+  background-color: #d8ba32;
+}
+
+h1 {
+  font-family: "TTDirectorsRegular", sans-serif !important;
+  color: #4b7548;
+}
