@@ -9,7 +9,17 @@ import { useBillionaireStore } from './stores/billionaireStore';
 const billionaireStore = useBillionaireStore();
 const billionaires = billionaireStore.getBillionaires();
 
-const chartContainer = ref(null);
+const chartContainer = ref<HTMLElement | null>(null);
+const chartOptions = {
+  chart: {
+    type: 'column',
+  },
+  title: {
+    text: 'Sample Chart',
+  },
+  series: [],
+};
+
 const chartInstance = ref<Highcharts.Chart | null>(null);
 
 onMounted(async () => {
@@ -20,20 +30,11 @@ onMounted(async () => {
     },
   });
 
-  await nextTick(); // Ensure DOM is ready before mounting Highcharts
+  await nextTick();
 
-  chartInstance.value = Highcharts.chart(chartContainer.value as HTMLElement, {
-    chart: { type: 'bar' },
-    title: { text: 'Billionaire Net Worth (in Billion $)' },
-    xAxis: { categories: billionaires.map(b => b.name) },
-    yAxis: { title: { text: 'Net Worth (Billion $)' } },
-    series: [
-      {
-        name: 'Net Worth',
-        data: billionaires.map(b => b.gbb.timeOfRecording.netWorth),
-      },
-    ],
-  });
+  if (chartContainer.value) {
+    chartInstance.value = Highcharts.chart(chartContainer.value, chartOptions);
+  }
 });
 </script>
 
