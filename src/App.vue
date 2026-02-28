@@ -1,47 +1,55 @@
 <script setup lang="ts">
-import { ref, onMounted, nextTick } from 'vue';
-import Highcharts from 'highcharts';
-import GoodBadBillionaireCoverImg from './components/GoodBadBillionaireCoverImg.vue';
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
-import { useBillionaireStore } from './stores/billionaireStore';
+import { ref, onMounted, nextTick } from 'vue'
+import Highcharts from 'highcharts'
+import GoodBadBillionaireCoverImg from './components/GoodBadBillionaireCoverImg.vue'
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
+import { useBillionaireStore } from './stores/billionaireStore'
 
-const billionaireStore = useBillionaireStore();
-const billionaires = billionaireStore.getBillionaires();
+const billionaireStore = useBillionaireStore()
+const billionaires = billionaireStore.getBillionaires()
 
-const chartContainer = ref<HTMLElement | null>(null);
-const chartOptions = {
+const chartContainer = ref<HTMLElement>()
+const chartOptions: Highcharts.Options = {
   chart: {
-    type: 'column',
+    type: 'bar',
+    backgroundColor: '#f3ecdd',
   },
   title: {
-    text: 'Sample Chart',
+    text: '',
   },
-  series: [],
-};
+  series: [{
+    name: 'Net Worth (B$)',
+    type: 'bar',
+    data: [100, 200, 300, 400, 500],
+  }],
+  xAxis: {
+    categories: [],
+  },
+  credits: {
+    enabled: false,
+  },
+}
 
-const chartInstance = ref<Highcharts.Chart | null>(null);
+const chartInstance = ref<Highcharts.Chart>()
 
 onMounted(async () => {
   Highcharts.setOptions({
-    lang: {
-      decimalPoint: '.',
-      thousandsSep: ',',
-    },
-  });
 
-  await nextTick();
+  })
+
+  await nextTick()
 
   if (chartContainer.value) {
-    chartInstance.value = Highcharts.chart(chartContainer.value, chartOptions);
+    chartInstance.value = Highcharts.chart(chartOptions)
   }
-});
+})
 </script>
 
 <template>
   <div>
-    <header>
-      <GoodBadBillionaireCoverImg />
+    <header style="display: flex; justify-content: center;">
+      <!-- <GoodBadBillionaireCoverImg /> -->
     </header>
 
     <main>
@@ -49,19 +57,19 @@ onMounted(async () => {
         <h1 class="text-3xl text-9xl text-center">GOOD BAD BILLIONAIRE</h1>
 
         <div>
-          <DataTable
-            :value="billionaires"
-            tableStyle="min-width: 50rem"
-          >
-            <Column field="id" header="ID"></Column>
+          <DataTable :value="billionaires" tableStyle="min-width: 50rem" class="">
+            <Column header="" class="justify-center">
+              <template #body="slotProps">
+                <img :src="slotProps.data.profilePic" class="w-12 h-12 rounded-full object-cover" />
+              </template>
+            </Column>
             <Column field="name" header="Name"></Column>
             <Column field="gbb.timeOfRecording.netWorth" header="Net Worth (B$)"></Column>
             <Column field="industry" header="Industry"></Column>
           </DataTable>
         </div>
 
-
-        <div ref="chartContainer" style="width: 80%; height: 400px; margin-top: 20px;"></div>
+        <div ref="chartContainer" style="width: 100%; height: 400px; margin-top: 20px"></div>
       </div>
     </main>
   </div>
