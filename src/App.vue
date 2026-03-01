@@ -10,6 +10,10 @@ const billionaireStore = useBillionaireStore()
 const billionaires = billionaireStore.getBillionaires()
 
 const chartContainer = ref<HTMLElement>()
+// Prepare chart data from billionaires
+const chartCategories = billionaires.map((b) => b.name)
+const chartData = billionaires.map((b) => b.gbb.timeOfRecording.netWorth)
+
 const chartOptions: Highcharts.Options = {
   chart: {
     type: 'bar',
@@ -18,13 +22,15 @@ const chartOptions: Highcharts.Options = {
   title: {
     text: '',
   },
-  series: [{
-    name: 'Net Worth (B$)',
-    type: 'bar',
-    data: [100, 200, 300, 400, 500],
-  }],
+  series: [
+    {
+      name: 'Net Worth (B$)',
+      type: 'bar',
+      data: chartData,
+    },
+  ],
   xAxis: {
-    categories: [],
+    categories: chartCategories,
   },
   credits: {
     enabled: false,
@@ -34,21 +40,19 @@ const chartOptions: Highcharts.Options = {
 const chartInstance = ref<Highcharts.Chart>()
 
 onMounted(async () => {
-  Highcharts.setOptions({
-
-  })
+  Highcharts.setOptions({})
 
   await nextTick()
 
   if (chartContainer.value) {
-    chartInstance.value = Highcharts.chart(chartOptions)
+    chartInstance.value = Highcharts.chart(chartContainer.value, chartOptions)
   }
 })
 </script>
 
 <template>
   <div>
-    <header style="display: flex; justify-content: center;">
+    <header style="display: flex; justify-content: center">
       <!-- <GoodBadBillionaireCoverImg /> -->
     </header>
 

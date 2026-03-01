@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 import { type BillionaireData, Judges, FinalVerdict } from '../types.ts';
 
 export const useBillionaireStore = defineStore('billionaireStore', {
-  state: () => ({
+  state: (): { billionaires: BillionaireData[] } => ({
     billionaires: [
       {
         id: 1,
@@ -138,7 +138,7 @@ export const useBillionaireStore = defineStore('billionaireStore', {
         },
         industry: 'Tech',
       }
-    ] as BillionaireData[],
+    ],
   }),
   actions: {
     getBillionaires() {
