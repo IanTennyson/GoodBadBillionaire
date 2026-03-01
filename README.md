@@ -1,5 +1,16 @@
 # .
 
+Running:
+```sh
+npm run dev
+```
+Run beads server - must run for mcp:
+```
+dolt sql-server --host 127.0.0.1 --port 3307
+```
+
+
+
 This template should help get you started developing with Vue 3 in Vite.
 
 ## Recommended IDE Setup
@@ -25,6 +36,8 @@ npm install
 ```sh
 npm run dev
 ```
+
+
 
 ### Type-Check, Compile and Minify for Production
 

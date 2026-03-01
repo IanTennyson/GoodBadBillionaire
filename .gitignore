@@ -28,3 +28,6 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+
+# bv (beads viewer) local config and caches
+.bv/
