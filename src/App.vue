@@ -10,27 +10,74 @@ const billionaireStore = useBillionaireStore()
 const billionaires = billionaireStore.getBillionaires()
 
 const chartContainer = ref<HTMLElement>()
-// Prepare chart data from billionaires
-const chartCategories = billionaires.map((b) => b.name)
-const chartData = billionaires.map((b) => b.gbb.timeOfRecording.netWorth)
 
-const chartOptions: Highcharts.Options = {
+// Map FinalVerdict to x-axis positions
+const verdictToX = {
+  GOOD: 0,
+  BILLIONAIRE: 1,
+  BAD: 2,
+}
+const verdictLabels = ['GOOD', 'BILLIONAIRE', 'BAD']
+
+// For each billionaire, use Simon's verdict for plotting (or first available)
+const scatterData = billionaires.map((b) => {
+  // Try to get Simon's verdict, fallback to first judge
+  const judges = Object.keys(b.gbb.verdict)
+  const simonVerdict = b.gbb.verdict['Simon Jack'] || b.gbb.verdict[judges[0]]
+  return {
+    x: verdictToX[simonVerdict.good_bad_billionaire],
+    y: b.gbb.timeOfRecording.netWorth,
+    name: b.name,
+    profilePic: b.profilePic,
+    verdict: simonVerdict.good_bad_billionaire,
+  }
+})
+
+const scatterOptions: Highcharts.Options = {
   chart: {
-    type: 'bar',
+    type: 'scatter',
     backgroundColor: '#f3ecdd',
   },
   title: {
-    text: '',
+    text: 'Billionaires: Verdict vs Net Worth',
+  },
+  xAxis: {
+    categories: verdictLabels,
+    title: { text: 'Final Verdict' },
+    tickInterval: 1,
+    min: 0,
+    max: 2,
+    labels: {
+      formatter: function () {
+        return verdictLabels[this.value as number] || ''
+      },
+    },
+  },
+  yAxis: {
+    title: { text: 'Net Worth (B$)' },
+    min: 0,
+  },
+  tooltip: {
+    useHTML: true,
+    formatter: function () {
+      // @ts-ignore
+      return `<b>${this.point.name}</b><br/>Verdict: ${verdictLabels[this.point.x]}<br/>Net Worth: ${this.point.y} B$<br/><img src='${this.point.profilePic}' style='width:40px;height:40px;border-radius:50%;object-fit:cover;' />`
+    },
   },
   series: [
     {
-      name: 'Net Worth (B$)',
-      type: 'bar',
-      data: chartData,
+      name: 'Billionaires',
+      type: 'scatter',
+      data: scatterData,
+      marker: {
+        symbol: 'circle',
+        radius: 8,
+      },
+      showInLegend: false,
     },
   ],
-  xAxis: {
-    categories: chartCategories,
+  legend: {
+    enabled: false,
   },
   credits: {
     enabled: false,
@@ -41,11 +88,9 @@ const chartInstance = ref<Highcharts.Chart>()
 
 onMounted(async () => {
   Highcharts.setOptions({})
-
   await nextTick()
-
   if (chartContainer.value) {
-    chartInstance.value = Highcharts.chart(chartContainer.value, chartOptions)
+    chartInstance.value = Highcharts.chart(chartContainer.value, scatterOptions)
   }
 })
 </script>
