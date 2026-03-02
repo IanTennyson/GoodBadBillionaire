@@ -9,6 +9,10 @@ Run beads server - must run for mcp:
 dolt sql-server --host 127.0.0.1 --port 3307
 ```
 
+Get tasks:
+```
+db list
+```
 
 
 This template should help get you started developing with Vue 3 in Vite.
